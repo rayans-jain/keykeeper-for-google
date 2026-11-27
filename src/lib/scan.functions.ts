@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Step1Result, Step2Result, YoutubeVideo } from "@/types/scan";
 
 const GEMINI_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent";
 
 const STEP1_PROMPT =
   "You are a recycling assistant. Identify the main object, its likely materials and condition. Decide if it is VALUABLE (phones, chargers, keys, wallets, cards, jewelry, documents, working electronics, anything a person would regret throwing away), WASTE, or UNCLEAR. Return ONLY JSON: {item_name, category, materials:[string], condition, verdict:'VALUABLE'|'WASTE'|'UNCLEAR', confidence:0-100, reason}";
@@ -35,7 +35,6 @@ async function callGeminiJson<T>(
     ],
     generationConfig: {
       responseMimeType: "application/json",
-      temperature: 0.3,
     },
   });
 
