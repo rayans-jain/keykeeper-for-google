@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Normalize multi-item scan reports in a shared browser-safe schema module before rendering or saving; medical classifications must override unsafe reuse and component recycling advice.
+- Store optional per-item reports alongside the legacy scan summary so existing browser history remains readable.
+- Apply the theme on the document element after hydration and persist only this presentation preference locally; all page colours derive from semantic CSS tokens.

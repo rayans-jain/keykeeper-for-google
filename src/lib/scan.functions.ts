@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { Step1Result, Step2Result, YoutubeVideo } from "@/types/scan";
+import { normalizePhotoReport } from "@/lib/item-reports";
 
 const GEMINI_ENDPOINT =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent";
@@ -19,18 +20,11 @@ function parseJsonDefensively<T>(raw: string): T {
   return JSON.parse(cleaned) as T;
 }
 
-async function callGeminiJson<T>(
-  apiKey: string,
-  prompt: string,
-  base64Image: string,
-): Promise<T> {
+async function callGeminiJson<T>(apiKey: string, prompt: string, base64Image: string): Promise<T> {
   const body = JSON.stringify({
     contents: [
       {
-        parts: [
-          { text: prompt },
-          { inline_data: { mime_type: "image/jpeg", data: base64Image } },
-        ],
+        parts: [{ text: prompt }, { inline_data: { mime_type: "image/jpeg", data: base64Image } }],
       },
     ],
     generationConfig: {
@@ -199,4 +193,14 @@ export const searchYoutubeDiyFn = createServerFn({ method: "POST" })
     } catch {
       return null;
     }
+  });
+
+export const inspectPhotoFn = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ imageBase64: z.string().min(20) }).parse(input))
+  .handler(async ({ data }) => {
+    const apiKey = process.env["rayansh"];
+    if (!apiKey) throw new Error("NOT_CONFIGURED");
+    const prompt = `Inspect ALL distinct visible products in this photo, not just the main one. Give a separate report for each product and each visible or reasonably inferred material component (body, lid, label, battery etc). Do not invent objects or claim an electronic device works from a photo. State uncertainty and location in the image. Categorize each product as USEFUL (keep, repair, donate or safely reuse), RECYCLABLE (waste accepted at appropriate collection), RESIDUAL (not useful or ordinarily recyclable), MEDICAL (syringes, sharps, used dressings, medicines, blood-contaminated or clinical waste), or UNCLEAR. Explain practical usefulness honestly; do not suggest reuse for unsafe items. Medical waste MUST be separate: no DIY, no household recycling, no dismantling, no handling exposed sharps; refer to authorized medical-waste collection. Medicines go to pharmacy take-back where available. Never recommend universal bin colours because local rules vary. For every non-medical component provide safe recycling preparation, the appropriate collection channel, and a specific YouTube search query for a safe recycling or reuse tutorial. Empty query when unsafe or unclear. A component can be non-recyclable: say so rather than invent a process. Use simple English. Return ONLY JSON: {items:[{name,location,disposition:'USEFUL'|'RECYCLABLE'|'RESIDUAL'|'MEDICAL'|'UNCLEAR',condition,confidence:0-100,usefulness,action,warnings:[string],components:[{name,material,recycling_steps:[string],youtube_search_query}]}]}. Return items:[] if no objects are identifiable.`;
+    const raw = await callGeminiJson<unknown>(apiKey, prompt, data.imageBase64);
+    return normalizePhotoReport(raw);
   });

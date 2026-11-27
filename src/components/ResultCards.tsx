@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { DiyVideoCard } from "@/components/DiyVideoCard";
 import { ScoreMeter } from "@/components/ScoreMeter";
+import { PhotoReports } from "@/components/PhotoReports";
 import type { ScanRecord } from "@/types/scan";
 
 interface ResultCardsProps {
@@ -43,6 +44,9 @@ export function ResultCards({ record, previewUrl, onScanAnother }: ResultCardsPr
       setTimeout(() => setShareNote(null), 2500);
     }
   };
+
+  if (record.items)
+    return <PhotoReports record={record} previewUrl={previewUrl} onScanAnother={onScanAnother} />;
 
   if (step1.verdict === "VALUABLE") {
     return (

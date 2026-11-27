@@ -1,0 +1,6 @@
+- [x] Redesign Home with clear sorting categories and meaningful imagery.
+- [x] Add a navbar theme switch and site-wide dark colours.
+- [x] Scan all visible items with separate usefulness and component recycling reports.
+- [x] Separate medical waste with safe disposal guidance.
+- [x] Verify live scans, history, dark mode and mobile layout.
+- [ ] Resolve direct tutorial videos: the saved Google key returns YouTube 403; enable YouTube Data API and allow it in the key restrictions. Search links are available meanwhile.

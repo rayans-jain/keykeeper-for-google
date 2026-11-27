@@ -49,12 +49,29 @@ export interface ScanRecord {
   thumbnail: string;
   step1: Step1Result;
   step2?: Step2Result;
+  items?: ItemReport[];
 }
 
-export type PipelineStage =
-  | "idle"
-  | "preparing"
-  | "identifying"
-  | "analyzing"
-  | "videos"
-  | "done";
+export type ItemDisposition = "USEFUL" | "RECYCLABLE" | "RESIDUAL" | "MEDICAL" | "UNCLEAR";
+
+export interface ComponentReport {
+  name: string;
+  material: string;
+  recycling_steps: string[];
+  youtube_search_query: string;
+  video?: YoutubeVideo;
+}
+
+export interface ItemReport {
+  name: string;
+  location: string;
+  disposition: ItemDisposition;
+  condition: string;
+  confidence: number;
+  usefulness: string;
+  action: string;
+  warnings: string[];
+  components: ComponentReport[];
+}
+
+export type PipelineStage = "idle" | "preparing" | "identifying" | "analyzing" | "videos" | "done";

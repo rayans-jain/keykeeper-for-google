@@ -1,14 +1,7 @@
+import sortingImage from "@/assets/sorting-home.png";
+import { Button } from "@/components/ui/button";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Camera,
-  FlaskConical,
-  HelpCircle,
-  Recycle,
-  ScanSearch,
-  ShieldAlert,
-} from "lucide-react";
+import { AlertTriangle, ArrowRight, Camera, Recycle, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,158 +25,115 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const PROBLEMS = [
-  {
-    icon: AlertTriangle,
-    title: "Wish-cycling contaminates good recyclables",
-    body: "Tossing one unaccepted item into the recycling bin can send an entire batch straight to landfill.",
-  },
+const CATEGORIES = [
   {
     icon: ShieldAlert,
-    title: "Valuables get thrown away by mistake",
-    body: "Chargers, keys, cards, and working electronics disappear into trash bags every day.",
-  },
-  {
-    icon: HelpCircle,
-    title: "Nobody knows plastic types",
-    body: "Resin codes and mixed packaging make split-second sorting guesswork at the bin.",
-  },
-];
-
-const STEPS = [
-  { icon: Camera, num: "01", title: "Capture", body: "Snap a photo or upload an image of one item." },
-  {
-    icon: ScanSearch,
-    num: "02",
-    title: "Identify",
-    body: "Our smart filter checks first whether it is a valuable you should keep.",
-  },
-  {
-    icon: FlaskConical,
-    num: "03",
-    title: "Analyze",
-    body: "See material breakdown, recyclability scores, and exact bin preparation.",
+    title: "Keep what matters",
+    text: "Reusable bottles, electronics and everyday essentials. Preserve, repair or donate.",
+    label: "USEFUL",
   },
   {
     icon: Recycle,
-    num: "04",
-    title: "Reuse",
-    body: "Watch real YouTube DIY tutorials to give the material a second life.",
+    title: "Recover the material",
+    text: "Sort each part: bottles, caps, labels, metal and cardboard each have a different destination.",
+    label: "RECYCLABLE",
+  },
+  {
+    icon: AlertTriangle,
+    title: "Handle with care",
+    text: "Medical waste and contaminated materials need separate, authorized collection — never household reuse.",
+    label: "SPECIAL HANDLING",
   },
 ];
-
 function HomePage() {
   return (
-    <div className="space-y-20">
-      {/* Hero */}
-      <section className="ewa-animate-in mx-auto max-w-3xl pt-6 text-center sm:pt-12">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-          Know in one glance what to do with it.
-        </h1>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-          End the split-second hesitation at the bin. Snap or upload any item to protect valuables,
-          understand the material scientifically, and discover real DIY reuse ideas.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/scan"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-primary px-7 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            Scan an item
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-          <a
-            href="#how-it-works"
-            className="inline-flex min-h-[48px] items-center rounded-full border border-border bg-background px-7 text-sm font-semibold text-foreground transition-colors duration-200 hover:border-primary hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            How it works
-          </a>
+    <div className="space-y-12">
+      <section className="home-scene ewa-animate-in -mx-4 sm:-mx-6">
+        <img
+          src={sortingImage}
+          alt="Reusable bottle, phone, glass, cardboard and recyclable packaging arranged for sorting"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="relative z-10 max-w-lg px-6 py-12 text-hero-ink sm:px-10 sm:py-16">
+          <p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase">
+            <Recycle className="h-4 w-4" /> Less waste. More possibility.
+          </p>
+          <h1 className="text-4xl font-bold sm:text-5xl">Eco Waste Wise</h1>
+          <p className="mt-5 max-w-sm text-xl font-medium">
+            A better destination for everything in your photo.
+          </p>
+          <p className="mt-3 max-w-sm text-sm leading-relaxed">
+            Keep the useful. Recover the recyclable. Separate the hazardous. One photo, a clear
+            report for every product.
+          </p>
+          <Button asChild className="mt-7 h-12 px-6">
+            <Link to="/scan">
+              <Camera /> Scan your photo <ArrowRight />
+            </Link>
+          </Button>
         </div>
       </section>
-
-      {/* 3 minimal problem cards */}
-      <section aria-label="Common sorting problems" className="grid gap-5 md:grid-cols-3">
-        {PROBLEMS.map((item) => {
-          const Icon = item.icon;
-          return (
-            <article key={item.title} className="ewa-card p-6">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-primary">
-                <Icon className="h-5 w-5" aria-hidden="true" />
-              </span>
-              <h2 className="mt-4 text-lg font-semibold text-foreground">{item.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-            </article>
-          );
-        })}
-      </section>
-
-      {/* Trash vs Treasure explainer */}
-      <section className="ewa-card p-6 sm:p-10">
-        <div className="grid gap-8 md:grid-cols-2 md:items-center">
+      <section className="border-b border-border pb-10">
+        <div className="mb-7 flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-              Trash vs. Treasure, checked first
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Before running a recycling breakdown, Eco Waste Wise checks whether the object is
-              something you would regret throwing away. Only confirmed waste continues to full
-              material scoring.
+            <p className="text-xs font-semibold uppercase text-primary">
+              Every item has a next step
             </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-accent/35 bg-background p-5">
-              <span className="inline-block rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-accent-foreground">
-                VALUABLE
-              </span>
-              <p className="mt-3 text-sm font-medium text-foreground">
-                Phones, chargers, keys, wallets, cards, jewelry, documents
-              </p>
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                Stops immediately with a maroon alert so you keep it safe.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-primary/25 bg-background p-5">
-              <span className="inline-block rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground">
-                WASTE
-              </span>
-              <p className="mt-3 text-sm font-medium text-foreground">
-                Packaging, bottles, cartons, worn items, scrap materials
-              </p>
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                Gets scores, bin prep steps, and 3 curated DIY reuse videos.
-              </p>
-            </div>
+            <h2 className="mt-2 text-2xl font-semibold">Sort smarter, not harder.</h2>
           </div>
         </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {CATEGORIES.map(({ icon: Icon, title, text, label }) => (
+            <article key={title} className="ewa-card p-6">
+              <Icon className="h-7 w-7 text-primary" />
+              <p className="mt-5 text-xs font-semibold text-primary">{label}</p>
+              <h3 className="mt-2 text-lg font-semibold">{title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
+            </article>
+          ))}
+        </div>
       </section>
-
-      {/* 4-step How it works */}
-      <section id="how-it-works" className="scroll-mt-28 space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">How it works</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Four fast steps from photo to confident action.
+      <section className="grid gap-8 pb-5 md:grid-cols-[1fr_1.4fr]">
+        <div>
+          <p className="text-xs font-semibold uppercase text-primary">From photo to purpose</p>
+          <h2 className="mt-3 text-3xl font-semibold">
+            The whole picture.
+            <br />
+            Every little part.
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            Get an honest assessment of usefulness, material-by-material disposal guidance and
+            relevant recycling videos.
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((step) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.num} className="ewa-card p-6">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="font-display text-sm font-semibold text-muted-foreground">
-                    {step.num}
-                  </span>
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-foreground">{step.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
+        <ol className="divide-y divide-border">
+          {[
+            {
+              title: "Photograph your products",
+              text: "Upload a clear image, or capture with your camera.",
+            },
+            {
+              title: "Review each item",
+              text: "Separate reports distinguish useful products, waste and medical hazards.",
+            },
+            {
+              title: "Choose the right destination",
+              text: "Check each component’s preparation and collection instructions.",
+            },
+            {
+              title: "Watch and take action",
+              text: "Open recycling videos directly beneath safe material reports.",
+            },
+          ].map((step, i) => (
+            <li key={step.title} className="flex gap-4 py-4 first:pt-0">
+              <span className="font-display text-lg text-primary">0{i + 1}</span>
+              <div>
+                <h3 className="font-semibold">{step.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{step.text}</p>
               </div>
-            );
-          })}
-        </div>
+            </li>
+          ))}
+        </ol>
       </section>
     </div>
   );

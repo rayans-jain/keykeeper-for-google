@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Leaf, Menu, X } from "lucide-react";
+import { Leaf, Menu, Moon, Sun, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const NAV_ITEMS = [
@@ -12,6 +13,28 @@ const NAV_ITEMS = [
 export function Navbar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    let preferred = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    try {
+      const stored = localStorage.getItem("ewa_theme");
+      if (stored) preferred = stored === "dark";
+    } catch {
+      /* storage unavailable */
+    }
+    setDark(preferred);
+    document.documentElement.classList.toggle("dark", preferred);
+  }, []);
+  const toggleTheme = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    try {
+      localStorage.setItem("ewa_theme", next ? "dark" : "light");
+    } catch {
+      /* storage unavailable */
+    }
+  };
   const navRef = useRef<HTMLDivElement | null>(null);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const [pill, setPill] = useState<{ left: number; width: number; ready: boolean }>({
@@ -46,7 +69,7 @@ export function Navbar() {
     <header className="ewa-no-print sticky top-4 z-40 mx-auto w-full max-w-[920px] px-4">
       <nav
         aria-label="Primary navigation"
-        className="ewa-glass-nav flex items-center justify-between rounded-full px-4 py-2 sm:px-5"
+        className="ewa-glass-nav flex items-center justify-between rounded-full px-4 py-2 text-foreground sm:px-5"
       >
         <Link
           to="/"
@@ -79,9 +102,7 @@ export function Navbar() {
                   linkRefs.current[item.to] = el;
                 }}
                 className={`relative z-10 flex min-h-[44px] items-center rounded-full px-4 text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                  isActive
-                    ? "text-primary-foreground"
-                    : "text-foreground/80 hover:text-foreground"
+                  isActive ? "text-primary-foreground" : "text-foreground/80 hover:text-foreground"
                 }`}
               >
                 {item.label}
@@ -90,6 +111,16 @@ export function Navbar() {
           })}
         </div>
 
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative z-10 shrink-0 rounded-full"
+          onClick={toggleTheme}
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+          title={dark ? "Light mode" : "Dark mode"}
+        >
+          {dark ? <Sun /> : <Moon />}
+        </Button>
         {/* Mobile hamburger */}
         <button
           type="button"

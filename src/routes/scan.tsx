@@ -12,8 +12,8 @@ import {
   setCachedVideo,
 } from "@/hooks/useLocalStorage";
 import { processDataUrl, processImageFile, type ProcessedImage } from "@/lib/image";
-import { analyzeWasteFn, identifyItemFn, searchYoutubeDiyFn } from "@/lib/scan.functions";
-import type { DiyIdeaWithVideo, PipelineStage, ScanRecord } from "@/types/scan";
+import { inspectPhotoFn, searchYoutubeDiyFn } from "@/lib/scan.functions";
+import type { PipelineStage, ScanRecord } from "@/types/scan";
 
 export const Route = createFileRoute("/scan")({
   head: () => ({
@@ -22,12 +22,12 @@ export const Route = createFileRoute("/scan")({
       {
         name: "description",
         content:
-          "Upload a photo or use your camera to identify valuables vs waste, view recyclability scores, and watch DIY reuse videos.",
+          "Identify every product in a photo, check usefulness, review component recycling guidance, and separate medical waste safely.",
       },
       { property: "og:title", content: "Scan an Item — Eco Waste Wise" },
       {
         property: "og:description",
-        content: "Instant material analysis and DIY reuse videos from one photo.",
+        content: "Separate product reports, component recycling guidance and medical-waste safety from one photo.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -69,48 +69,50 @@ function ScanPage() {
       setPreviewUrl(processed.dataUrl);
 
       setStage("identifying");
-      const step1 = await identifyItemFn({ data: { imageBase64: processed.base64 } });
-
-      if (step1.verdict !== "WASTE") {
-        const finished: ScanRecord = {
-          id: `scan_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-          timestamp: Date.now(),
-          thumbnail: processed.thumbnail,
-          step1,
-        };
-        saveScanToHistory(finished);
-        setRecord(finished);
-        setStage("done");
-        return;
-      }
-
       setStage("analyzing");
-      const step2 = await analyzeWasteFn({
-        data: { imageBase64: processed.base64, step1Summary: JSON.stringify(step1) },
-      });
+      const items = await inspectPhotoFn({ data: { imageBase64: processed.base64 } });
+      if (items.length === 0)
+        throw new Error("No clear products found. Try a closer photo with better lighting.");
 
       setStage("videos");
-      const ideasWithVideos: DiyIdeaWithVideo[] = await Promise.all(
-        step2.diy_ideas.map(async (idea) => {
-          const cached = getCachedVideo(idea.youtube_search_query);
-          if (cached) return { ...idea, video: cached };
-          const found = await searchYoutubeDiyFn({
-            data: { query: idea.youtube_search_query },
-          }).catch(() => null);
-          if (found) {
-            setCachedVideo(idea.youtube_search_query, found);
-            return { ...idea, video: found };
-          }
-          return idea;
-        }),
-      );
+      const reportedItems = [];
+      for (const item of items) {
+        const components = [];
+        for (const component of item.components) {
+          const query = component.youtube_search_query;
+          const video =
+            item.disposition !== "MEDICAL" && query
+              ? (getCachedVideo(query) ??
+                (await searchYoutubeDiyFn({ data: { query: query.slice(0, 160) } }).catch(
+                  () => null,
+                )))
+              : null;
+          if (video) setCachedVideo(query, video);
+          components.push(video ? { ...component, video } : component);
+        }
+        reportedItems.push({ ...item, components });
+      }
+      const first = items[0];
+      if (!first) throw new Error("No products found.");
 
       const finished: ScanRecord = {
         id: `scan_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
         timestamp: Date.now(),
         thumbnail: processed.thumbnail,
-        step1,
-        step2: { ...step2, diy_ideas: ideasWithVideos },
+        step1: {
+          item_name: items.map((item) => item.name).join(", "),
+          category: items.length > 1 ? "Multiple products" : first.disposition,
+          materials: [
+            ...new Set(items.flatMap((item) => item.components.map((part) => part.material))),
+          ],
+          condition: first.condition,
+          verdict: items.every((item) => item.disposition === "USEFUL") ? "VALUABLE" : "WASTE",
+          confidence: Math.round(
+            items.reduce((sum, item) => sum + item.confidence, 0) / items.length,
+          ),
+          reason: first.usefulness,
+        },
+        items: reportedItems,
       };
       saveScanToHistory(finished);
       setRecord(finished);

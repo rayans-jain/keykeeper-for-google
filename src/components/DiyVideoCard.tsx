@@ -68,6 +68,16 @@ export function DiyVideoCard({ idea }: { idea: DiyIdeaWithVideo }) {
         </div>
         <h3 className="mt-3 text-base font-semibold text-foreground">{idea.title}</h3>
         {idea.video && (
+          <a
+            href={`https://www.youtube.com/watch?v=${encodeURIComponent(idea.video.videoId)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary underline underline-offset-4"
+          >
+            Watch on YouTube <ExternalLink className="h-4 w-4" />
+          </a>
+        )}
+        {idea.video && (
           <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">
             {idea.video.videoTitle} · {idea.video.channelTitle}
           </p>
