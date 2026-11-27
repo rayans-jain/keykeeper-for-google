@@ -20,7 +20,8 @@ describe("Scanner Gemini model", () => {
     ["identification", identifyItemFn],
     ["material analysis", analyzeWasteFn],
   ] as const)("uses the available replacement for %s", async (_name, scan) => {
-    vi.stubEnv("GOOGLE_API_KEY", "test-key");
+    vi.stubEnv("rayansh", "test-key");
+    vi.stubEnv("GOOGLE_API_KEY", "");
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: "{}" }] } }] })),
     );
@@ -33,6 +34,7 @@ describe("Scanner Gemini model", () => {
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
     );
     const request = fetchMock.mock.calls[0]?.[1] as RequestInit | undefined;
+    expect(new Headers(request?.headers).get("x-goog-api-key")).toBe("test-key");
     const body = JSON.parse(String(request?.body)) as { generationConfig: Record<string, unknown> };
     expect(body.generationConfig["responseMimeType"]).toBe("application/json");
     expect(body.generationConfig).not.toHaveProperty("temperature");

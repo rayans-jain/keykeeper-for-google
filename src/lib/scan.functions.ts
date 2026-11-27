@@ -87,7 +87,7 @@ async function callGeminiJson<T>(
 export const identifyItemFn = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ imageBase64: z.string().min(20) }).parse(input))
   .handler(async ({ data }): Promise<Step1Result> => {
-    const apiKey = process.env["GOOGLE_API_KEY"];
+    const apiKey = process.env["rayansh"];
     if (!apiKey) {
       throw new Error("NOT_CONFIGURED");
     }
@@ -112,7 +112,7 @@ export const analyzeWasteFn = createServerFn({ method: "POST" })
     z.object({ imageBase64: z.string().min(20), step1Summary: z.string() }).parse(input),
   )
   .handler(async ({ data }): Promise<Step2Result> => {
-    const apiKey = process.env["GOOGLE_API_KEY"];
+    const apiKey = process.env["rayansh"];
     if (!apiKey) {
       throw new Error("NOT_CONFIGURED");
     }
@@ -160,7 +160,7 @@ export const analyzeWasteFn = createServerFn({ method: "POST" })
 export const searchYoutubeDiyFn = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ query: z.string().min(1).max(160) }).parse(input))
   .handler(async ({ data }): Promise<YoutubeVideo | null> => {
-    const apiKey = process.env["GOOGLE_API_KEY"];
+    const apiKey = process.env["rayansh"];
     if (!apiKey) return null;
     try {
       const params = new URLSearchParams({
