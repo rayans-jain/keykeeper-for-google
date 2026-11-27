@@ -4,3 +4,4 @@
 - [x] Separate medical waste with safe disposal guidance.
 - [x] Verify live scans, history, dark mode and mobile layout.
 - [ ] Resolve direct tutorial videos: the saved Google key returns YouTube 403; enable YouTube Data API and allow it in the key restrictions. Search links are available meanwhile.
+- [x] Replace the Home background photo with an animated sorting scene and animate site sections and controls; verified desktop/mobile, dark mode, pause and reduced motion.

@@ -32,3 +32,4 @@ use the editor.
 - Normalize multi-item scan reports in a shared browser-safe schema module before rendering or saving; medical classifications must override unsafe reuse and component recycling advice.
 - Store optional per-item reports alongside the legacy scan summary so existing browser history remains readable.
 - Apply the theme on the document element after hydration and persist only this presentation preference locally; all page colours derive from semantic CSS tokens.
+- Use a CSS-rendered sorting scene and intersection-based section reveals for site animation; keep motion pausable and disable it for reduced-motion preferences.

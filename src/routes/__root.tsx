@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { DotGridBackground } from "@/components/DotGridBackground";
 import { Navbar } from "@/components/Navbar";
+import { SiteMotion } from "@/components/SiteMotion";
 
 function NotFoundComponent() {
   return (
@@ -139,6 +140,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <DotGridBackground />
+      <SiteMotion />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Navbar />
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-10 pb-16 sm:px-6">

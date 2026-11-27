@@ -1,4 +1,4 @@
-import sortingImage from "@/assets/sorting-home.png";
+import { RecyclingScene } from "@/components/RecyclingScene";
 import { Button } from "@/components/ui/button";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AlertTriangle, ArrowRight, Camera, Recycle, ShieldAlert } from "lucide-react";
@@ -49,29 +49,25 @@ function HomePage() {
   return (
     <div className="space-y-12">
       <section className="home-scene ewa-animate-in -mx-4 sm:-mx-6">
-        <img
-          src={sortingImage}
-          alt="Reusable bottle, phone, glass, cardboard and recyclable packaging arranged for sorting"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="relative z-10 max-w-lg px-6 py-12 text-hero-ink sm:px-10 sm:py-16">
-          <p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase">
+        <div className="relative z-10 mx-auto max-w-2xl px-6 pt-8 text-center text-foreground sm:pt-10">
+          <p className="mb-4 flex items-center justify-center gap-2 text-xs font-semibold uppercase text-primary">
             <Recycle className="h-4 w-4" /> Less waste. More possibility.
           </p>
-          <h1 className="text-4xl font-bold sm:text-5xl">Eco Waste Wise</h1>
-          <p className="mt-5 max-w-sm text-xl font-medium">
+          <h1 className="home-title text-4xl font-bold sm:text-5xl">Eco Waste Wise</h1>
+          <p className="mx-auto mt-4 max-w-lg text-xl font-medium">
             A better destination for everything in your photo.
           </p>
-          <p className="mt-3 max-w-sm text-sm leading-relaxed">
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
             Keep the useful. Recover the recyclable. Separate the hazardous. One photo, a clear
             report for every product.
           </p>
-          <Button asChild className="mt-7 h-12 px-6">
+          <Button asChild className="mt-5 h-12 px-6">
             <Link to="/scan">
               <Camera /> Scan your photo <ArrowRight />
             </Link>
           </Button>
         </div>
+        <RecyclingScene />
       </section>
       <section className="border-b border-border pb-10">
         <div className="mb-7 flex items-end justify-between gap-4">

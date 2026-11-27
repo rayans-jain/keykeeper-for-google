@@ -216,31 +216,240 @@
 .home-scene {
   position: relative;
   overflow: hidden;
-  min-height: 450px;
-  background: var(--hero-wash);
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
 }
-.home-scene::after {
-  content: "";
+.recycling-scene {
+  position: relative;
+  width: min(100%, 720px);
+  height: 220px;
+  margin: 10px auto 0;
+}
+.scene-track {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    var(--hero-wash) 0%,
-    color-mix(in oklab, var(--hero-wash) 90%, transparent) 28%,
-    transparent 70%
-  );
-  pointer-events: none;
+  top: 86px;
+  left: 7%;
+  right: 7%;
+  height: 35px;
+  border-top: 2px solid var(--border);
+  border-bottom: 2px solid var(--border);
+  background: repeating-linear-gradient(90deg, var(--secondary) 0 18px, var(--border) 18px 20px);
+  animation: conveyor 2s linear infinite;
+}
+.scene-scanner {
+  position: absolute;
+  top: 10px;
+  left: 42%;
+  width: 16%;
+  height: 114px;
+  border: 2px solid var(--primary);
+  border-radius: 12px 12px 0 0;
+  background: color-mix(in oklab, var(--primary) 5%, transparent);
+}
+.scene-scan-line {
+  position: absolute;
+  top: 10px;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: var(--primary);
+  animation: scan-line 2.4s ease-in-out infinite alternate;
+}
+.scene-object {
+  position: absolute;
+  top: 17px;
+  width: 86px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  animation: object-sort 7s ease-in-out infinite;
+}
+.scene-object > svg {
+  width: 45px;
+  height: 45px;
+  stroke-width: 1.5;
+}
+.scene-object > span {
+  font-size: 9px;
+  font-weight: 700;
+}
+.scene-phone {
+  left: 15%;
+  color: var(--primary);
+  animation-delay: -1s;
+}
+.scene-bottle {
+  left: 44%;
+  color: var(--chart-2);
+  animation-delay: -3.3s;
+}
+.scene-box {
+  left: 72%;
+  color: var(--chart-1);
+  animation-delay: -5.7s;
+}
+.scene-destinations {
+  position: absolute;
+  top: 140px;
+  left: 9%;
+  right: 9%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.scene-destinations > div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid var(--primary);
+  padding: 10px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+}
+.scene-destinations > div:nth-child(2) {
+  border-color: var(--chart-2);
+  color: var(--chart-2);
+}
+.scene-destinations > div:nth-child(3) {
+  border-color: var(--destructive);
+  color: var(--destructive);
+}
+.scene-destinations svg {
+  width: 18px;
+  height: 18px;
+}
+.scene-recycle-icon {
+  animation: recycle-turn 8s linear infinite;
+}
+.scene-paused *,
+.scene-paused {
+  animation-play-state: paused !important;
+}
+.home-title {
+  animation: title-arrive 900ms ease-out both;
+}
+.motion-entry {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 650ms ease,
+    transform 650ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.motion-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.ewa-card {
+  transition:
+    border-color 220ms ease,
+    transform 220ms ease;
+}
+.ewa-card:hover {
+  border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
+}
+main a,
+main button,
+nav button {
+  transition:
+    transform 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+main a:hover,
+main button:hover,
+nav button:hover {
+  transform: translateY(-2px);
+}
+main button:active,
+main a:active {
+  transform: translateY(0) scale(0.98);
+}
+.ewa-dot-grid {
+  animation: grid-drift 24s linear infinite;
+}
+@keyframes conveyor {
+  to {
+    background-position: 80px 0;
+  }
+}
+@keyframes scan-line {
+  to {
+    transform: translateY(85px);
+  }
+}
+@keyframes object-sort {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  35% {
+    transform: translateY(-12px) rotate(4deg);
+  }
+  65% {
+    transform: translateY(4px) rotate(0);
+  }
+}
+@keyframes recycle-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes title-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes grid-drift {
+  to {
+    background-position: 24px 24px;
+  }
 }
 @media (max-width: 640px) {
-  .home-scene {
-    min-height: 470px;
+  .recycling-scene {
+    height: 240px;
   }
-  .home-scene::after {
-    background: linear-gradient(
-      90deg,
-      var(--hero-wash),
-      color-mix(in oklab, var(--hero-wash) 70%, transparent)
-    );
+  .scene-object {
+    width: 60px;
+    height: 78px;
+    top: 26px;
+  }
+  .scene-object > svg {
+    width: 35px;
+    height: 35px;
+  }
+  .scene-phone {
+    left: 12%;
+  }
+  .scene-bottle {
+    left: 42%;
+  }
+  .scene-box {
+    left: 71%;
+  }
+  .scene-destinations {
+    left: 5%;
+    right: 5%;
+    gap: 8px;
+  }
+  .scene-destinations > div {
+    font-size: 10px;
+    gap: 4px;
+  }
+  .scene-destinations > div > svg:last-child {
+    display: none;
   }
 }
 @keyframes ewa-fade-up {
@@ -261,12 +470,20 @@
 @media (prefers-reduced-motion: reduce) {
   .ewa-animate-in,
   * {
-    animation-duration: 0.01ms !important;
+    animation: none !important;
     transition-duration: 0.01ms !important;
+  }
+  .motion-entry {
+    opacity: 1;
+    transform: none;
   }
 }
 
 @media print {
+  .motion-entry {
+    opacity: 1;
+    transform: none;
+  }
   .ewa-no-print,
   .ewa-dot-grid,
   .ewa-edge-blur-left,
