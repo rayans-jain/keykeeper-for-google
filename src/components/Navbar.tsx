@@ -1,27 +1,25 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Leaf, Menu, Moon, Sun, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Home, ScanLine, History, Info, Leaf, Moon, Sun } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Home" },
-  { to: "/scan", label: "Scan" },
-  { to: "/history", label: "History" },
-  { to: "/about", label: "About" },
+  { to: "/", label: "Home", icon: Home },
+  { to: "/scan", label: "Scan", icon: ScanLine },
+  { to: "/history", label: "History", icon: History },
+  { to: "/about", label: "About", icon: Info },
 ] as const;
 
 export function Navbar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(false);
   useEffect(() => {
     let preferred = window.matchMedia("(prefers-color-scheme: dark)").matches;
     try {
       const stored = localStorage.getItem("ewa_theme");
       if (stored) preferred = stored === "dark";
-    } catch {
-      /* storage unavailable */
-    }
+    } catch { /* storage unavailable */ }
     setDark(preferred);
     document.documentElement.classList.toggle("dark", preferred);
   }, []);
@@ -29,133 +27,30 @@ export function Navbar() {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
-    try {
-      localStorage.setItem("ewa_theme", next ? "dark" : "light");
-    } catch {
-      /* storage unavailable */
-    }
+    try { localStorage.setItem("ewa_theme", next ? "dark" : "light"); }
+    catch { /* storage unavailable */ }
   };
-  const navRef = useRef<HTMLDivElement | null>(null);
-  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const [pill, setPill] = useState<{ left: number; width: number; ready: boolean }>({
-    left: 0,
-    width: 0,
-    ready: false,
-  });
-
-  const activeTo =
-    NAV_ITEMS.find((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)))
-      ?.to ?? "/";
-
-  useLayoutEffect(() => {
-    const updatePill = () => {
-      const container = navRef.current;
-      const activeEl = linkRefs.current[activeTo];
-      if (!container || !activeEl) return;
-      const cRect = container.getBoundingClientRect();
-      const aRect = activeEl.getBoundingClientRect();
-      setPill({ left: aRect.left - cRect.left, width: aRect.width, ready: true });
-    };
-    updatePill();
-    window.addEventListener("resize", updatePill);
-    return () => window.removeEventListener("resize", updatePill);
-  }, [activeTo]);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
-
   return (
-    <header className="ewa-no-print sticky top-4 z-40 mx-auto w-full max-w-[920px] px-4">
-      <nav
-        aria-label="Primary navigation"
-        className="ewa-glass-nav flex items-center justify-between rounded-full px-4 py-2 text-foreground sm:px-5"
-      >
-        <Link
-          to="/"
-          className="relative z-10 flex min-h-[44px] items-center gap-2 rounded-full px-1 text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Leaf className="h-4 w-4" aria-hidden="true" />
-          </span>
-          <span className="font-display text-base font-semibold tracking-tight">
-            Eco Waste Wise
-          </span>
+    <div className="bottom-dock ewa-no-print">
+      <nav aria-label="Primary navigation" className="ewa-glass-nav flex items-center gap-1 rounded-full p-2 text-foreground sm:gap-2 sm:px-3">
+        <Link to="/" aria-label="Eco Waste Wise home" title="Eco Waste Wise" className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "hidden h-11 w-11 shrink-0 rounded-full text-primary sm:flex")}>
+          <Leaf aria-hidden="true" />
         </Link>
-
-        {/* Desktop sliding pill links */}
-        <div ref={navRef} className="relative z-10 hidden items-center gap-1 sm:flex">
-          {pill.ready && (
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute top-0 bottom-0 rounded-full bg-primary transition-all duration-300 ease-out"
-              style={{ left: `${pill.left}px`, width: `${pill.width}px` }}
-            />
-          )}
-          {NAV_ITEMS.map((item) => {
-            const isActive = item.to === activeTo;
+        <div className="grid min-w-0 flex-1 grid-cols-4 gap-1">
+          {NAV_ITEMS.map(({ to, label, icon: Icon }) => {
+            const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
             return (
-              <Link
-                key={item.to}
-                to={item.to}
-                ref={(el) => {
-                  linkRefs.current[item.to] = el;
-                }}
-                className={`relative z-10 flex min-h-[44px] items-center rounded-full px-4 text-sm font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
-                  isActive ? "text-primary-foreground" : "text-foreground/80 hover:text-foreground"
-                }`}
-              >
-                {item.label}
+              <Link key={to} to={to} aria-current={active ? "page" : undefined} title={label} className={cn(buttonVariants({ variant: active ? "default" : "ghost" }), "h-12 min-w-0 flex-col gap-1 rounded-full px-1 text-[10px] sm:h-11 sm:flex-row sm:gap-2 sm:text-sm")}>
+                <Icon aria-hidden="true" /><span>{label}</span>
               </Link>
             );
           })}
         </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative z-10 shrink-0 rounded-full"
-          onClick={toggleTheme}
-          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-          title={dark ? "Light mode" : "Dark mode"}
-        >
+        <span className="mx-1 h-7 border-l border-border" aria-hidden="true" />
+        <Button variant="ghost" size="icon" className="h-11 w-11 shrink-0 rounded-full" onClick={toggleTheme} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} title={dark ? "Light mode" : "Dark mode"}>
           {dark ? <Sun /> : <Moon />}
         </Button>
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-expanded={mobileOpen}
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          className="relative z-10 flex h-11 w-11 items-center justify-center rounded-full text-foreground transition-colors duration-200 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:hidden"
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </nav>
-
-      {/* Mobile glass dropdown sheet */}
-      {mobileOpen && (
-        <div className="ewa-glass-nav ewa-animate-in mt-2 rounded-2xl p-2 sm:hidden">
-          <div className="relative z-10 flex flex-col gap-1">
-            {NAV_ITEMS.map((item) => {
-              const isActive = item.to === activeTo;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`flex min-h-[44px] items-center rounded-xl px-4 text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </header>
+    </div>
   );
 }

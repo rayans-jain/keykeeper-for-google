@@ -194,8 +194,8 @@
   display: none;
 }
 .ewa-glass-nav {
-  background: color-mix(in oklab, var(--background) 88%, transparent);
-  backdrop-filter: blur(18px);
+  background: color-mix(in oklab, var(--background) 72%, transparent);
+  backdrop-filter: blur(24px) saturate(150%);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-nav);
 }
@@ -329,10 +329,6 @@
 .scene-recycle-icon {
   animation: recycle-turn 8s linear infinite;
 }
-.scene-paused *,
-.scene-paused {
-  animation-play-state: paused !important;
-}
 .home-title {
   animation: title-arrive 900ms ease-out both;
 }
@@ -374,6 +370,41 @@ main a:active {
 }
 .ewa-dot-grid {
   animation: grid-drift 24s linear infinite;
+}
+.bottom-dock {
+  position: fixed;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(680px, calc(100% - 24px));
+  z-index: 50;
+}
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+  table-layout: fixed;
+}
+.report-table th {
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 600;
+}
+.report-table th, .report-table td {
+  padding: 16px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.report-table tbody tr:last-child td { border-bottom: 0; }
+.report-table tbody tr:hover { background: color-mix(in oklab, var(--primary) 3%, var(--background)); }
+.report-table .medical-row { background: color-mix(in oklab, var(--destructive) 6%, var(--background)); }
+.report-table .medical-row:hover { background: color-mix(in oklab, var(--destructive) 9%, var(--background)); }
+@media (max-width: 640px) {
+  .report-table { font-size: 12px; }
+  .report-table th, .report-table td { padding: 10px 8px; }
 }
 @keyframes conveyor {
   to {

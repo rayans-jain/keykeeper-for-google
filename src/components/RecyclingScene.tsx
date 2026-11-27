@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   BottleWine,
   Package,
@@ -6,17 +5,13 @@ import {
   Recycle,
   ShieldCheck,
   ShieldAlert,
-  Pause,
-  Play,
   ArrowDown,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export function RecyclingScene() {
-  const [paused, setPaused] = useState(false);
   return (
     <div
-      className={`recycling-scene ${paused ? "scene-paused" : ""}`}
+      className="recycling-scene"
       role="img"
       aria-label="Animated sorting scene: reusable phone, recyclable bottle and cardboard, with separate hazardous waste collection"
     >
@@ -53,16 +48,6 @@ export function RecyclingScene() {
           <ArrowDown />
         </div>
       </div>
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute bottom-3 right-3 z-10"
-        onClick={() => setPaused(!paused)}
-        aria-label={paused ? "Play animation" : "Pause animation"}
-        title={paused ? "Play animation" : "Pause animation"}
-      >
-        {paused ? <Play /> : <Pause />}
-      </Button>
     </div>
   );
 }
